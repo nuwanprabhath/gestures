@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import mlp
+
 print(cv2.__version__)
 
 
@@ -16,9 +17,6 @@ capture = cv2.VideoCapture(0)
 fgbg = cv2.createBackgroundSubtractorMOG2(history=50,
                                           detectShadows=True)  # detectShadows=True can be added as a parameter
 initial = True
-# Define the codec and create VideoWriter object to save video to file
-# fourcc = cv2.VideoWriter_fourcc(*'XVID')
-# out = cv2.VideoWriter('output.avi', fourcc, 20.0, (1280, 720))
 c = 0
 
 
@@ -54,7 +52,7 @@ while True:
                 merged_frame = np.bitwise_and(merged_frame, thresh1)
                 deviation = mse(initial_frame, merged_frame)
                 print(deviation)
-                if deviation > 0.3:
+                if deviation > 0.25:
                     print("---------")
                     classification = mlp.classify(merged_frame)
                     category = classification["class"]
@@ -73,7 +71,7 @@ while True:
             cv2.imshow('frame1', blackAndWhiteImage)
 
             if cv2.waitKey(25) & 0xFF == ord('q'):
-                # cv2.imwrite('3-1.png', blackAndWhiteImage)
+                # cv2.imwrite('3-10.png', blackAndWhiteImage)
                 break
         else:
             break

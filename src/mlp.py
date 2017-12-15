@@ -6,11 +6,21 @@ import cv2
 path_neural_net = 'data/neural_net/gestures_net.pkl'
 
 
+def resize_image(img):
+    r = 100.0 / img.shape[1]
+    dim = (100, int(img.shape[0] * r))
+    # Resizing image https://www.pyimagesearch.com/2014
+    # /01/20/basic-image-manipulations-in-python-and-opencv-resizing-scaling-rotating-and-cropping/
+    resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+    return resized
+
+
 # This method will read image from disk and convert to a 2D matrix
 # of 0 and 1 and then flat the matrix to get a single array.
 def read_and_transform_image(path):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    transformed_img = np.multiply(img, 1.0 / 255).flatten()
+    resized = resize_image(img)
+    transformed_img = np.multiply(resized, 1.0 / 255).flatten()
     return transformed_img
 
 
@@ -27,6 +37,11 @@ def load_images():
         transformed_img = read_and_transform_image('data/train/2/2-' + str(i) + '.png')
         x.append(transformed_img)
         y.append(2)
+
+    for i in range(1, 11):
+        transformed_img = read_and_transform_image('data/train/3/3-' + str(i) + '.png')
+        x.append(transformed_img)
+        y.append(3)
     data = {"x": x, "y": y}
     print("Loading images finished")
     return data
@@ -47,7 +62,7 @@ def train():
     print("Start training neural network...")
     # Classification http://scikit-learn.org/stable/modules/neural_networks_supervised.html#classification
     # http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier
-    clf = MLPClassifier(verbose=True, solver='adam', alpha=1e-5, hidden_layer_sizes=(100, 100), random_state=1)
+    clf = MLPClassifier(verbose=True, solver='adam', alpha=0.0001, hidden_layer_sizes=(100, 100), random_state=1, early_stopping=False)
     clf.fit(x, y)
     print("Finished training. Persisting trained neural net")
     persist_neural_net(clf, path_neural_net)
@@ -65,7 +80,8 @@ def classify(image):
     # test_image1 = read_and_transform_image('data/train/1/1-2.png')
     # test_image2 = read_and_transform_image('data/train/2/2-3.png')
     # prediction = clf.predict([test_image1])
-    flat_image = image.flatten()
+    resized = resize_image(image)
+    flat_image = resized.flatten()
     prediction_prob = clf.predict_proba([flat_image])
     print("prediction_prob: ", prediction_prob)
     max_index = np.argmax(prediction_prob)
@@ -75,3 +91,6 @@ def classify(image):
         "class": max_class,
         "prob": max_prob
     }
+
+
+# train()
