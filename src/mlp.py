@@ -54,14 +54,19 @@ def train():
     print("Persisting done")
 
 
-def classify(image):
+def init():
+    global clf
     print("Loading persisted neural net")
     clf = load_neural_net(path_neural_net)
     print("Loading done")
-    test_image1 = read_and_transform_image('data/train/1/1-2.png')
+
+
+def classify(image):
+    # test_image1 = read_and_transform_image('data/train/1/1-2.png')
     # test_image2 = read_and_transform_image('data/train/2/2-3.png')
     # prediction = clf.predict([test_image1])
-    prediction_prob = clf.predict_proba([test_image1])
+    flat_image = image.flatten()
+    prediction_prob = clf.predict_proba([flat_image])
     max_index = np.argmax(prediction_prob)
     max_class = clf.classes_[max_index]
     max_prob = prediction_prob[0][max_index]
@@ -71,6 +76,10 @@ def classify(image):
         "class": max_class,
         "prob": max_prob
     }
+
+
+def test():
+    print("test")
 
 
 
@@ -108,4 +117,4 @@ def classify(image):
 # print(prediction)
 
 # train()
-classify("")
+# classify("")

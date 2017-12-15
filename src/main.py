@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from mlp import classify
+import mlp
 print(cv2.__version__)
 
 
@@ -8,6 +8,8 @@ def flip_frame(frame_to_flip):
     return cv2.flip(frame_to_flip, 1)
 
 
+# Initialize neural net
+mlp.init()
 # Giving file name will read from video file instead from camera
 capture = cv2.VideoCapture(0)
 # Removing background https://docs.opencv.org/3.3.0/db/d5c/tutorial_py_bg_subtraction.html
@@ -77,8 +79,8 @@ while True:
                 deviation = mse(initial_frame, merged_frame)
                 print("---------")
                 print(deviation)
-                if deviation > 0.5:
-                    classification = classify(merged_frame)
+                if deviation > 0.3:
+                    classification = mlp.classify(merged_frame)
                     category = classification["class"]
                     prob = classification["prob"]
                     print("Prob: " + str(prob))
