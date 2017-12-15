@@ -27,6 +27,13 @@ def mse(image_1, image_2):
     return err
 
 
+def get_gesture_from_category(cat):
+    if cat == 1:
+        return "Left swipe"
+    elif cat == 2:
+        return "Right swipe"
+
+
 while True:
     if capture.isOpened():
         # Capture frame by frame
@@ -47,7 +54,7 @@ while True:
                 merged_frame = np.ones([height, width], np.uint8)
                 initial_frame = merged_frame
                 initial = False
-
+            text = ""
             if c > 10:
                 merged_frame = np.bitwise_and(merged_frame, thresh1)
                 deviation = mse(initial_frame, merged_frame)
@@ -60,6 +67,7 @@ while True:
                     print("Prob: " + str(prob))
                     print("Category: " + str(category))
                     if prob > 0.8:
+                        text = get_gesture_from_category(category)
                         print("Found gesture: " + str(category))
                     else:
                         print("Not found")
@@ -68,7 +76,8 @@ while True:
 
             c = c + 1
             blackAndWhiteImage = np.multiply(merged_frame, 255)
-            cv2.imshow('frame1', blackAndWhiteImage)
+            cv2.imshow('Capture', cv2.putText(blackAndWhiteImage, text, (540, 50),
+                                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 4, cv2.LINE_AA))
 
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 # cv2.imwrite('3-10.png', blackAndWhiteImage)

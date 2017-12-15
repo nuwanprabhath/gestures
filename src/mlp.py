@@ -62,7 +62,8 @@ def train():
     print("Start training neural network...")
     # Classification http://scikit-learn.org/stable/modules/neural_networks_supervised.html#classification
     # http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier
-    clf = MLPClassifier(verbose=True, solver='adam', alpha=0.0001, hidden_layer_sizes=(100, 100), random_state=1, early_stopping=False)
+    clf = MLPClassifier(verbose=True, solver='adam', alpha=0.0001, hidden_layer_sizes=(100, 100), random_state=1,
+                        early_stopping=False)
     clf.fit(x, y)
     print("Finished training. Persisting trained neural net")
     persist_neural_net(clf, path_neural_net)
