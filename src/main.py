@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-
+from mlp import classify
 print(cv2.__version__)
 
 
@@ -43,6 +43,14 @@ c = 0
 # # params.minInertiaRatio = 0.01
 # detector = cv2.SimpleBlobDetector_create(params)
 
+
+# Mean square error https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+def mse(image_1, image_2):
+    err = np.sum((image_1.astype("float") - image_2.astype("float")) ** 2)
+    err /= float(image_1.shape[0] * image_1.shape[1])
+    return err
+
+
 while True:
     if capture.isOpened():
         # Capture frame by frame
@@ -50,8 +58,8 @@ while True:
         if ret:
             width = round(capture.get(3))
             height = round(capture.get(4))
-            # print('width'+str(width))
-            # print('height'+str(height))
+            # print('width'+str(width)) #width 1280
+            # print('height'+str(height)) #height 720
             flippedFrame = flip_frame(frame)
 
             frameWithoutBackground = fgbg.apply(flippedFrame)
@@ -61,19 +69,30 @@ while True:
 
             if initial:
                 merged_frame = np.ones([height, width], np.uint8)
+                initial_frame = merged_frame
                 initial = False
-            print("-----" + str(c))
-
-            print(merged_frame)
 
             if c > 10:
                 merged_frame = np.bitwise_and(merged_frame, thresh1)
-                print("++++-----")
-                print(thresh1)
-                print("after")
-                print(merged_frame)
+                deviation = mse(initial_frame, merged_frame)
+                print("---------")
+                print(deviation)
+                if deviation > 0.5:
+                    classification = classify(merged_frame)
+                    category = classification["class"]
+                    prob = classification["prob"]
+                    print("Prob: " + str(prob))
+                    print("Category: " + str(category))
+                    if prob > 0.8:
+                        print("Found gesture: " + str(category))
+                    else:
+                        print("Not found")
+                    print("Resetting image")
+                    merged_frame = np.ones([height, width], np.uint8)
+
             c = c + 1
-            cv2.imshow('frame1', np.multiply(merged_frame, 255))
+            blackAndWhiteImage = np.multiply(merged_frame, 255)
+            cv2.imshow('frame1', blackAndWhiteImage)
             # cv2.imshow('frame2', np.multiply(thresh1, 255))
             # overlay = thresh1.copy()
             # keypoints = detector.detect(thresh1)
@@ -89,9 +108,10 @@ while True:
             # im_with_keypoints = cv2.drawKeypoints(flippedFrame, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
             # print(keypoints)
             # cv2.imshow('frame2', im_with_keypoints)
-            # cv2.imshow('frame3', thresh1)
+            # cv2.imshow('frame3', thresh1)q
 
             if cv2.waitKey(25) & 0xFF == ord('q'):
+                # cv2.imwrite('3-1.png', blackAndWhiteImage)
                 break
         else:
             break
