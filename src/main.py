@@ -21,30 +21,6 @@ initial = True
 # out = cv2.VideoWriter('output.avi', fourcc, 20.0, (1280, 720))
 c = 0
 
-# # Setup SimpleBlobDetector parameters.
-# params = cv2.SimpleBlobDetector_Params()
-#
-# # Change thresholds
-# params.minThreshold = 10;
-# params.maxThreshold = 200;
-#
-# # Filter by Area.
-# params.filterByArea = True
-# params.minArea = 200
-# #
-# # Filter by Circularity
-# params.filterByCircularity = True
-# params.minCircularity = 0.1
-#
-# # Filter by Convexity
-# params.filterByConvexity = True
-# params.minConvexity = 0.87
-# #
-# # # Filter by Inertia
-# # params.filterByInertia = True
-# # params.minInertiaRatio = 0.01
-# detector = cv2.SimpleBlobDetector_create(params)
-
 
 # Mean square error https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
 def mse(image_1, image_2):
@@ -77,9 +53,9 @@ while True:
             if c > 10:
                 merged_frame = np.bitwise_and(merged_frame, thresh1)
                 deviation = mse(initial_frame, merged_frame)
-                print("---------")
                 print(deviation)
                 if deviation > 0.3:
+                    print("---------")
                     classification = mlp.classify(merged_frame)
                     category = classification["class"]
                     prob = classification["prob"]
@@ -95,22 +71,6 @@ while True:
             c = c + 1
             blackAndWhiteImage = np.multiply(merged_frame, 255)
             cv2.imshow('frame1', blackAndWhiteImage)
-            # cv2.imshow('frame2', np.multiply(thresh1, 255))
-            # overlay = thresh1.copy()
-            # keypoints = detector.detect(thresh1)
-            # print(keypoints)
-            # for k in keypoints:
-            #     print(k)
-            #     cv2.circle(overlay, (int(k.pt[0]), int(k.pt[1])), int(k.size/2), (0, 0, 255), -1)
-            #     cv2.line(overlay, (int(k.pt[0])-20, int(k.pt[1])), (int(k.pt[0])+20, int(k.pt[1])), (0,0,0), 3)
-            #     cv2.line(overlay, (int(k.pt[0]), int(k.pt[1])-20), (int(k.pt[0]), int(k.pt[1])+20), (0,0,0), 3)
-            #
-            #     opacity = 0.5
-            #     cv2.addWeighted(overlay, opacity, thresh1, 1 - opacity, 0, thresh1)
-            # im_with_keypoints = cv2.drawKeypoints(flippedFrame, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-            # print(keypoints)
-            # cv2.imshow('frame2', im_with_keypoints)
-            # cv2.imshow('frame3', thresh1)q
 
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 # cv2.imwrite('3-1.png', blackAndWhiteImage)
