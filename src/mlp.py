@@ -28,20 +28,30 @@ def load_images():
     x = []
     y = []
     print("Start loading images...")
-    for i in range(1, 11):
+    for i in range(1, 12):
         transformed_img = read_and_transform_image('data/train/1/1-' + str(i) + '.png')
         x.append(transformed_img)
         y.append(1)
 
-    for i in range(1, 11):
+    for i in range(1, 12):
         transformed_img = read_and_transform_image('data/train/2/2-' + str(i) + '.png')
         x.append(transformed_img)
         y.append(2)
 
-    for i in range(1, 11):
+    for i in range(1, 13):
         transformed_img = read_and_transform_image('data/train/3/3-' + str(i) + '.png')
         x.append(transformed_img)
         y.append(3)
+
+    for i in range(1, 12):
+        transformed_img = read_and_transform_image('data/train/4/4-' + str(i) + '.png')
+        x.append(transformed_img)
+        y.append(4)
+
+    for i in range(1, 21):
+        transformed_img = read_and_transform_image('data/train/5/5-' + str(i) + '.png')
+        x.append(transformed_img)
+        y.append(5)
     data = {"x": x, "y": y}
     print("Loading images finished")
     return data
@@ -62,7 +72,7 @@ def train():
     print("Start training neural network...")
     # Classification http://scikit-learn.org/stable/modules/neural_networks_supervised.html#classification
     # http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier
-    clf = MLPClassifier(verbose=True, solver='adam', alpha=0.0001, hidden_layer_sizes=(100, 100), random_state=1,
+    clf = MLPClassifier(verbose=True, solver='adam', alpha=0.0001, hidden_layer_sizes=(100, 100, 100), random_state=1,
                         early_stopping=False)
     clf.fit(x, y)
     print("Finished training. Persisting trained neural net")
