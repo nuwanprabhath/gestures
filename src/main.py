@@ -21,8 +21,8 @@ initial = True
 c = 0
 
 
-# Mean square error https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
-def mse(image_1, image_2):
+# Structural Similarity https://www.pyimagesearch.com/2014/09/15/python-compare-two-images/
+def structural_similarity(image_1, image_2):
     return ssim(image_1, image_2)
 
 
@@ -72,7 +72,7 @@ while True:
                 merged_frame = add
                 print('-------')
                 # cv2.imshow('Capture', add)
-                deviation = mse(initial_frame, merged_frame)
+                deviation = structural_similarity(initial_frame, merged_frame)
                 print("deviation")
                 print(deviation)
                 text = ""

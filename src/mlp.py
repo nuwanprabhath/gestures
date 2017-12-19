@@ -38,7 +38,7 @@ def load_images():
         x.append(transformed_img)
         y.append(2)
 
-    for i in range(1, 13):
+    for i in range(1, 16):
         transformed_img = read_and_transform_image('data/train/3/3-' + str(i) + '.png')
         x.append(transformed_img)
         y.append(3)
